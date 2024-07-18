@@ -17,9 +17,9 @@ if [ -z "$SERVICE_ACCOUNT" ]; then
 fi
 
 # Enable APIs and create artifacts repository
-# gcloud services enable compute.googleapis.com --project $PROJECT_ID
-# gcloud services enable workstations.googleapis.com --project $PROJECT_ID
-# gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com --project $PROJECT_ID
+gcloud services enable compute.googleapis.com --project $PROJECT_ID
+gcloud services enable workstations.googleapis.com --project $PROJECT_ID
+gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com --project $PROJECT_ID
 
 # Check if the artifacts repository exists then create it
 output=$(gcloud artifacts repositories describe default --location=us-central1 --project=$PROJECT_ID 2>&1)
@@ -28,24 +28,10 @@ if [[ $output == *"ERROR"* ]]; then
 fi
 
 # Add IAM policy binding
-# gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SERVICE_ACCOUNT --role=roles/storage.objectAdmin
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/iam.serviceAccountUser
-# gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$SERVICE_ACCOUNT --role=roles/artifactregistry.writer
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/cloudbuild.builds.builder
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/storage.admin
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/viewer
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/serviceusage.serviceUsageConsumer
-
-# Remove IAM policy binding
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/iam.serviceAccountUser
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SERVICE_ACCOUNT --role=roles/storage.objectAdmin
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/artifactregistry.writer
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/cloudbuild.builds.builder
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/serviceusage.serviceUsageConsumer
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/storage.admin
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/storage.objectAdmin
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/viewer
-# gcloud projects remove-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/storage.objectCreator
-# gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$USER --role=roles/storage.objectAdmin
-
-
+# gcloud projects add-iam-policy-binding $PROJECT_ID --member=serviceAccount:$SERVICE_ACCOUNT --role=roles/storage.objectAdmin
+# gcloud projects add-iam-policy-binding $PROJECT_ID --member=user:$SERVICE_ACCOUNT --role=roles/artifactregistry.writer
